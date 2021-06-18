@@ -70,19 +70,6 @@ Order.belongsToMany(Product, { through: OrderItem });
 // sequelize.sync({ force: true })    // used to override the tables in the database
 sequelize.sync()
   .then(result => {
-    return User.findByPk(1);
-  })
-  .then(user => {
-    if (!user) {
-      return User.create({ name: 'Sowmya', email: 'sowmya@gmail.com' });
-    }
-
-    return user;
-  })
-  .then(user => {
-    return user.createCart();
-  })
-  .then(cart => {
     app.listen(3000);
   })
   .catch(err => {

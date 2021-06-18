@@ -1,10 +1,8 @@
+const bcrypt = require('bcryptjs');
+
 const User = require('../models/user');
 
 exports.getLogin = (req, res) => {
-  // const isLoggedIn = req.get('Cookie').split(';')[1].trim().split('=')[1];
-
-  // const isLoggedIn = req.get('Cookie').split('=')[1] === 'true';
-
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
@@ -13,10 +11,6 @@ exports.getLogin = (req, res) => {
 };
 
 exports.postLogin = (req, res) => {
-  // req.isLoggedIn = true; // need to be set globally
-
-  // res.setHeader('Set-Cookie', 'isLoggedIn = true'); // setting the cookie
-
   User.findByPk(1)
     .then(user => {
       req.session.isLoggedIn = true;
@@ -36,4 +30,44 @@ exports.postLogout = (req, res) => {
     console.log(err);
     res.redirect('/');
   });
+}
+
+exports.getSignup = (req, res, next) => {
+  res.render('auth/signup', {
+    path: '/signup',
+    pageTitle: 'My Shop',
+    isAuthenticated: false
+  })
+}
+
+//creating a new user and redirect to login page
+exports.postSignup = (req, res, next) => {
+  const { name, email, password, confirmPassword } = req.body;
+
+  User.findOne({ where: { email: email } })
+    .then(userData => {
+      // find if user already exists
+
+      if (userData) {
+        return res.redirect('/signup');
+      }
+
+      return bcrypt.hash(password, 12)
+        .then(hashedPassword => {
+          // if no user then create new User
+          User.create({
+            name: name,
+            email: email,
+            password: hashedPassword,
+          })
+            .then(user => {
+              user.createCart();      // create cart for the user
+            })
+            .then(result => {
+              res.redirect('/login');
+            })
+            .catch(err => console.log(err));
+        });
+    })
+    .catch(err => console.log(err));
 }
