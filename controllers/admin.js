@@ -3,6 +3,12 @@ const User = require('../models/user');
 
 // get the product form
 exports.getAddProduct = (req, res) => {
+  // restricting the access of the route 
+  if (!req.session.isLoggedIn) {
+    return res.redirect('/login');
+  }
+
+  // only logged-in user can access this route
   res.render('admin/edit-product', {
     pageTitle: 'My Shop',
     path: '/admin/add-product',
