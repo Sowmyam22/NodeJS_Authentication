@@ -6,8 +6,6 @@ const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const csrf = require('csurf'); // adding csrf protection
 const flash = require('connect-flash'); // used to show the error messages
-const nodemailer = require('nodemailer');
-const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -29,12 +27,6 @@ const store = new SequelizeStore({
 });
 
 var csrfProtection = csrf();
-
-const transporter = nodemailer.createTransport(sendgridTransport({
-  auth: {
-    api_key: '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'
-  }
-}));
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
