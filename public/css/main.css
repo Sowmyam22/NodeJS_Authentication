@@ -134,3 +134,19 @@ main {
 .cart-qty {
   margin-right: 2rem;
 }
+
+.user-message {
+  margin: auto;
+  width: 50%;
+  padding: 1rem;
+  border-radius: 3px;
+  border: 1px solid rgb(252, 62, 78);
+  background-color: rgb(233, 179, 179);
+  text-align: center;
+  color: rgb(252, 62, 78);
+}
+
+.user-message__error {
+  border-color: rgb(252, 62, 78);
+  background-color: rgb(233, 179, 179);
+}

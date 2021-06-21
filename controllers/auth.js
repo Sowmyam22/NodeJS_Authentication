@@ -3,10 +3,18 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 exports.getLogin = (req, res) => {
+  let message = req.flash('error');
+
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
-    errorMessage: req.flash('error') // passsing the error message to the views
+    errorMessage: message // passsing the error message to the views
   });
 };
 
@@ -21,7 +29,7 @@ exports.postLogin = (req, res) => {
       }
 
       // check the incoming password with the encrypted password of the user
-      
+
       bcrypt.compare(password, user.password)
         .then(doMatch => {
           if (doMatch) {
@@ -33,6 +41,7 @@ exports.postLogin = (req, res) => {
             })
           }
 
+          req.flash('error', 'Invalid email or pasword');
           res.redirect('/login');
         })
         .catch(err => console.log(err));
@@ -50,9 +59,17 @@ exports.postLogout = (req, res) => {
 }
 
 exports.getSignup = (req, res, next) => {
+  let message = req.flash('error');
+
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'My Shop',
+    errorMessage: message
   })
 }
 
@@ -65,6 +82,7 @@ exports.postSignup = (req, res, next) => {
       // find if user already exists
 
       if (userData) {
+        req.flash('error', 'Email Already Exists!');
         return res.redirect('/signup');
       }
 
