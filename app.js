@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const csrf = require('csurf');
 
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -24,6 +25,8 @@ const store = new SequelizeStore({
   db: sequelize
 });
 
+var csrfProtection = csrf();
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -38,17 +41,25 @@ app.use(session(
   })
 );
 
+app.use(csrfProtection);
+
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
   }
 
   User.findByPk(req.session.user.id)
-  .then(user => {
-    req.user = user;
-    next()
-  })
-  .catch(err => console.log(err));
+    .then(user => {
+      req.user = user;
+      next()
+    })
+    .catch(err => console.log(err));
+})
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 })
 
 app.use('/admin', adminData.routes);
