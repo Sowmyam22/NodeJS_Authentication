@@ -30,6 +30,8 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "mysql2": "^2.2.5",
+    "nodemailer": "^6.6.2",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "sequelize": "^6.6.2"
   }
 }
