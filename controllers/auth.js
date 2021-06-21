@@ -146,8 +146,9 @@ exports.getReset = (req, res) => {
   })
 }
 
+// send reset link and generate the token for that user
 exports.postReset = (req, res) => {
-  crypto.randomBytes(32, (err, buffer) => {
+  crypto.randomBytes(32, (err, buffer) => { // creates the random and unique token
     if (err) {
       console.log(err);
       return res.redirect('/reset');
@@ -209,8 +210,8 @@ exports.getNewPassword = (req, res) => {
 // update the password
 exports.postNewPassword = (req, res) => {
   const newPassword = req.body.password;
-  const userId = req.body.userId;
-  const passwordToken = req.body.passwordToken;
+  const { userId, passwordToken } = req.body;
+
   let resetUser;
 
   User.findOne({

@@ -3,7 +3,7 @@ const Product = require('../models/product');
 exports.getProducts = (req, res) => {
   //fetching the products using sequelize
 
-  Product.findAll()
+  Product.findAll({where: {userId: req.user.id}})
     .then(products => {
       res.render('shop/product-list', {
         pageTitle: 'My Shop',
