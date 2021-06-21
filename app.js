@@ -4,7 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const csrf = require('csurf');
+const csrf = require('csurf'); // adding csrf protection
+const flash = require('connect-flash'); // used to show the error messages
 
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -41,7 +42,9 @@ app.use(session(
   })
 );
 
-app.use(csrfProtection);
+app.use(csrfProtection); // should write this middleware only after the session iniitialization
+
+app.use(flash()); // should be initialized only after the initialzation of the session
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -55,6 +58,8 @@ app.use((req, res, next) => {
     })
     .catch(err => console.log(err));
 })
+
+// middleware to check if logged in user is authenticated and adding the csrf protection for every request
 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;

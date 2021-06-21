@@ -6,7 +6,7 @@ exports.getLogin = (req, res) => {
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
-    isAuthenticated: false
+    errorMessage: req.flash('error') // passsing the error message to the views
   });
 };
 
@@ -16,6 +16,7 @@ exports.postLogin = (req, res) => {
   User.findOne({ where: { email: email } })
     .then(user => {
       if (!user) {
+        req.flash('error', 'Invalid email or pasword'); // setting the error message
         return res.redirect('/login');
       }
 
@@ -52,7 +53,6 @@ exports.getSignup = (req, res, next) => {
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'My Shop',
-    isAuthenticated: false
   })
 }
 
